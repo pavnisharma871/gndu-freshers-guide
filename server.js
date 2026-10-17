@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const app = express();
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
-const host = process.env.HOST || "127.0.0.1";
+const host = "0.0.0.0";
 
 const requestWindowMs = 10 * 60 * 1000;
 const requestLimit = 20;
