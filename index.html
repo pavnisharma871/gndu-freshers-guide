@@ -16,7 +16,7 @@
 
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="#home" aria-label="GNDU Freshers Guide home">
+        <a class="brand" href="/" aria-label="GNDU Freshers Guide home">
           <span class="brand-mark" aria-hidden="true">G</span>
           <span class="brand-name">GNDU Freshers Guide</span>
         </a>
@@ -37,15 +37,34 @@
 
         <nav class="site-nav" id="primary-navigation" aria-label="Main navigation">
           <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#admissions">Admissions</a></li>
-            <li><a href="#campus-life">Campus Life</a></li>
-            <li><a href="#departments">Departments</a></li>
-            <li><a href="#courses">Courses</a></li>
-            <li><a href="#campus-map">Campus Map</a></li>
-            <li><a href="#canteens">Canteens</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#events">Events</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/admissions">Admissions</a></li>
+            <li><a href="/courses">Courses</a></li>
+            <li><a href="/departments">Departments</a></li>
+            <li><a href="/campus-life">Campus Life</a></li>
+            <li class="nav-more">
+              <details>
+                <summary>Explore pages</summary>
+                <ul>
+                  <li><a href="/scholarships">Scholarships</a></li>
+                  <li><a href="/hostels">Hostels</a></li>
+                  <li><a href="/library">Library</a></li>
+                  <li><a href="/canteens">Canteens</a></li>
+                  <li><a href="/sports">Sports</a></li>
+                  <li><a href="/health-services">Health Services</a></li>
+                  <li><a href="/campus-map">Campus Map</a></li>
+                  <li><a href="/events">Events</a></li>
+                  <li><a href="/placements">Placements</a></li>
+                  <li><a href="/student-life">Student Life</a></li>
+                  <li><a href="/photo-gallery">Photo Gallery</a></li>
+                  <li><a href="/about">About GNDU</a></li>
+                  <li><a href="/contact">Contact</a></li>
+                  <li><a href="/exams-results">Exams &amp; Results</a></li>
+                  <li><a href="/faqs">FAQs</a></li>
+                  <li><a href="/student-support">Student Support</a></li>
+                </ul>
+              </details>
+            </li>
             <li>
               <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
                 <span class="theme-toggle-icon" aria-hidden="true">☾</span>
@@ -63,9 +82,10 @@
           <p class="eyebrow"><span aria-hidden="true"></span> An independent student guide</p>
           <h1 id="hero-title">GNDU Freshers Guide</h1>
           <p class="hero-intro">
-            Welcome to an independent guide for GNDU students and freshers. Start
-            exploring university information and student resources as you begin
-            your journey.
+            Find practical starting points for admissions, GNDU programmes,
+            campus facilities, student activities and university support.
+            Each guide section links to official sources so you can check
+            current requirements and arrangements before acting.
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="#campus-life">
@@ -79,26 +99,12 @@
         </div>
       </section>
 
-      <section class="events-preview section-shell" aria-labelledby="home-events-title">
-        <div class="events-preview-heading">
-          <div>
-            <p class="eyebrow">Stay involved</p>
-            <h2 id="home-events-title">Upcoming Events</h2>
-            <p>No upcoming GNDU event dates have been verified in the official press-release listing or university calendar. Check official notices for updates.</p>
-          </div>
-          <a class="button button-secondary events-view-all" href="#events">
-            View All Events <span aria-hidden="true">→</span>
-          </a>
-        </div>
-        <div class="event-grid home-event-grid" id="home-events-grid"></div>
-        <p class="event-image-note">Event information is added only when it can be verified from an official GNDU source.</p>
-      </section>
-
       <section class="features section-shell" aria-labelledby="features-title">
         <div class="section-heading">
           <p class="eyebrow">Start exploring</p>
-          <h2 id="features-title">A guide for your next steps</h2>
-          <p>Find your way to the topics that matter as you get to know university life.</p>
+          <h2 id="features-title">Explore the guide</h2>
+          <p>Use these topic guides to orient yourself, compare official information
+            and find the university page responsible for current details.</p>
         </div>
 
         <div class="feature-grid">
@@ -106,7 +112,7 @@
             <span class="feature-number" aria-hidden="true">01</span>
             <div class="feature-icon icon-admissions" aria-hidden="true">↗</div>
             <h3>Admissions</h3>
-            <p>Verified admissions guidance will be gathered here as this guide grows.</p>
+            <p>Compare admission routes, session notices, programme requirements and application guidance.</p>
             <a class="text-link" href="#admissions">
               Visit admissions <span aria-hidden="true">→</span>
             </a>
@@ -116,7 +122,7 @@
             <span class="feature-number" aria-hidden="true">02</span>
             <div class="feature-icon icon-departments" aria-hidden="true">◇</div>
             <h3>Departments</h3>
-            <p>A future starting point for exploring verified department information.</p>
+            <p>Browse GNDU faculties and departments, with links to official unit and programme information.</p>
             <a class="text-link" href="#departments">
               Explore departments <span aria-hidden="true">→</span>
             </a>
@@ -126,7 +132,7 @@
             <span class="feature-number" aria-hidden="true">03</span>
             <div class="feature-icon icon-campus" aria-hidden="true">⌂</div>
             <h3>Campus Life</h3>
-            <p>Student resources and campus-life information will take shape here.</p>
+            <p>Explore GNDU-published hostel, health, library, sports and student-support information.</p>
             <a class="text-link" href="#campus-life">
               Discover campus life <span aria-hidden="true">→</span>
             </a>
@@ -176,9 +182,19 @@
             <span class="feature-number" aria-hidden="true">08</span>
             <div class="feature-icon" aria-hidden="true">▦</div>
             <h3>Events</h3>
-            <p>Explore cultural, academic, sports, and student activities.</p>
+            <p>Learn about GNDU activity programmes and student clubs; check official notices for current dates.</p>
             <a class="text-link" href="#events">
               Explore events <span aria-hidden="true">→</span>
+            </a>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-number" aria-hidden="true">09</span>
+            <div class="feature-icon" aria-hidden="true">↗</div>
+            <h3>Placements</h3>
+            <p>Find GNDU's official placement, internship and industrial-training information.</p>
+            <a class="text-link" href="/placements">
+              Explore placements <span aria-hidden="true">→</span>
             </a>
           </article>
         </div>
@@ -186,11 +202,12 @@
 
       <section class="coming-soon section-shell" aria-labelledby="coming-title">
         <div class="coming-heading">
-          <p class="eyebrow">The guide is just getting started</p>
-          <h2 id="coming-title">More to explore, soon</h2>
+          <p class="eyebrow">Use official university sources</p>
+          <h2 id="coming-title">Plan your next steps</h2>
           <p>
-            These are starting points for future content. Details will be added
-            when they can be verified.
+            Requirements, dates and availability can change by programme and
+            session. Follow the links in each section to confirm current details
+            with GNDU before making decisions.
           </p>
         </div>
 
@@ -396,6 +413,68 @@
                 </div>
               </details>
             </div>
+            <div class="admission-demo-grid">
+              <section class="admission-panel" aria-labelledby="student-application-title">
+                <p class="eyebrow">Independent student project</p>
+                <h3 id="student-application-title">Student Admission Registration</h3>
+                <p class="admission-panel-intro">
+                  Register an application with this independent student project
+                  using a programme listed in this guide. A GNDU student record
+                  is not required, and registration does not apply to GNDU or
+                  confirm admission.
+                </p>
+                <form class="admission-form" data-student-application>
+                  <label for="student-admission-name">Student Full Name</label>
+                  <input id="student-admission-name" name="studentName" type="text" autocomplete="name" minlength="2" maxlength="100" required>
+
+                  <label for="student-admission-course">Course Selection</label>
+                  <select id="student-admission-course" name="course" required disabled>
+                    <option value="">Loading programme list…</option>
+                  </select>
+
+                  <label for="student-admission-session">Academic Session</label>
+                  <input id="student-admission-session" name="academicSession" type="text" inputmode="numeric" placeholder="2026-27" pattern="[0-9]{4}-[0-9]{2}" maxlength="7" aria-describedby="student-session-hint" required>
+                  <small id="student-session-hint">Use the YYYY-YY format shown on the current official prospectus.</small>
+
+                  <label for="student-admission-email">Email Address</label>
+                  <input id="student-admission-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+
+                  <label for="student-admission-contact">Contact Number</label>
+                  <input id="student-admission-contact" name="contactNumber" type="tel" autocomplete="tel" minlength="7" maxlength="20" required>
+
+                  <button class="button button-primary" type="submit">Submit Application</button>
+                  <p class="admission-form-message" data-application-feedback role="status" aria-live="polite"></p>
+                </form>
+                <p class="demo-disclaimer">
+                  This is not an official GNDU admission portal, application,
+                  roll number, or admission confirmation. Applications are
+                  stored by this project in its configured database. Use
+                  fictional details for testing and do not submit sensitive
+                  personal information.
+                </p>
+              </section>
+
+              <section class="admission-panel" aria-labelledby="student-records-title">
+                <p class="eyebrow">Private application check</p>
+                <h3 id="student-records-title">Verify Application Storage</h3>
+                <p class="admission-panel-intro">
+                  Verify an application using its reference ID and the
+                  server-configured access token. The check returns only the
+                  reference ID, status, and saved date; it never returns
+                  student names, email addresses, or phone numbers.
+                </p>
+                <form class="admission-form" data-student-record-search>
+                  <label for="student-record-query">Application reference ID</label>
+                  <input id="student-record-query" name="applicationReferenceId" type="text" minlength="41" maxlength="41" pattern="GNDU-APP-[A-Fa-f0-9]{32}" autocomplete="off" required>
+
+                  <label for="student-record-token">Access token</label>
+                  <input id="student-record-token" name="accessToken" type="password" minlength="32" autocomplete="off" required>
+
+                  <button class="button button-primary" type="submit">Verify Application</button>
+                </form>
+                <div class="student-record-results" data-record-search-results role="status" aria-live="polite"></div>
+              </section>
+            </div>
             </div>
           </details>
           <details class="placeholder-card directory-card" id="departments">
@@ -417,7 +496,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-arts">Arts &amp; Social Sciences</h4>
-                    <p>Academic units covering history, social sciences, media, information and human behaviour.</p>
+                    <p>This group brings together historical study, political and social sciences, psychology, communication, and library and information science. Its departments examine societies, institutions, media, human behaviour, and the organization and use of information.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-history.aspx" target="_blank" rel="noopener noreferrer">History</a><span>Historical periods, societies and heritage.</span></li>
@@ -435,7 +514,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-economics">Economics &amp; Business</h4>
-                    <p>Academic units in economics, commerce, business and hospitality-related studies.</p>
+                    <p>The listed units cover economics, commerce and financial studies, business and management, and hotel management and tourism. Programme names and admission routes differ by unit, so check the linked department information for the exact course and current session.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-commerce.aspx" target="_blank" rel="noopener noreferrer">University School of Financial Studies</a><span>Commerce and financial studies.</span></li>
@@ -450,7 +529,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-engineering">Engineering &amp; Technology</h4>
-                    <p>Computing, engineering, electronics and computational technology disciplines.</p>
+                    <p>GNDU groups computer science, computer engineering, electronics, civil and mechanical engineering, and computational statistics and data analytics here. These units span software and computing, engineering systems, electronic technology, and quantitative analysis.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-computer-science-final.aspx" target="_blank" rel="noopener noreferrer">Computer Science</a><span>Computer science and computing.</span></li>
@@ -459,7 +538,6 @@
                   <li><a href="https://online.gndu.ac.in/department-of-Civil.aspx" target="_blank" rel="noopener noreferrer">Civil Engineering</a><span>Civil engineering.</span></li>
                   <li><a href="https://online.gndu.ac.in/department-of-Mechanical.aspx" target="_blank" rel="noopener noreferrer">Mechanical Engineering</a><span>Mechanical engineering.</span></li>
                   <li><a href="https://online.gndu.ac.in/department-of-Computational-Stat_Data-Analytics.aspx" target="_blank" rel="noopener noreferrer">Computational Statistics and Data Analytics</a><span>Computational statistics and data analytics.</span></li>
-                  <li><a href="https://online.gndu.ac.in/CITS.aspx" target="_blank" rel="noopener noreferrer">Centre for IT Solutions</a><span>University centre for IT solutions.</span></li>
                 </ul>
                 </details>
               </section>
@@ -468,7 +546,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-life-sciences">Life Sciences</h4>
-                    <p>Departments spanning biological, environmental, pharmaceutical and related life sciences.</p>
+                    <p>The faculty directory lists biotechnology, botany and environmental sciences, human genetics, microbiology, molecular biology and biochemistry, pharmaceutical sciences, and zoology. Together, these units cover biological systems, organisms, health-related genetics, medicines, and environmental study.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-biotechnology.aspx" target="_blank" rel="noopener noreferrer">Biotechnology</a><span>Biotechnology and biological applications.</span></li>
@@ -486,7 +564,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-languages">Languages</h4>
-                    <p>Language, literature and language-study departments.</p>
+                    <p>Departments and schools in this group focus on English, Hindi, Punjabi, Sanskrit, Pali, Prakrit, Urdu, Persian, and foreign languages. Their academic areas include language learning, literature, and the study of linguistic traditions.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-english.aspx" target="_blank" rel="noopener noreferrer">English</a><span>English language, literature and literary studies.</span></li>
@@ -503,7 +581,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-sciences">Sciences</h4>
-                    <p>Natural and applied sciences, mathematics, food and materials-related disciplines.</p>
+                    <p>This grouping includes chemistry, physics, mathematics, food science and technology, and apparel and textile technology. The listed disciplines range from fundamental science and quantitative methods to food systems, materials, and textiles.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/Departments.aspx" target="_blank" rel="noopener noreferrer">Apparel and Textile Technology</a><span>Apparel and textile technology.</span></li>
@@ -519,7 +597,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-laws">Laws</h4>
-                    <p>Legal education and law.</p>
+                    <p>The Faculty of Laws contains GNDU's Laws unit. Consult its official department page and the current prospectus for the programmes offered, legal-study requirements, and admission process.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-laws.aspx" target="_blank" rel="noopener noreferrer">Laws</a><span>Legal studies and law.</span></li>
@@ -531,7 +609,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-physical-education">Physical Education</h4>
-                    <p>Physical education and related academic study.</p>
+                    <p>The Physical Education department offers academic programmes in physical education and sport-related study. GNDU's department page lists degree routes and fitness-test requirements; applicants should confirm the current admission criteria before applying.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-physical-education.aspx" target="_blank" rel="noopener noreferrer">Physical Education</a><span>Physical education.</span></li>
@@ -543,7 +621,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-humanities">Humanities &amp; Religious Studies</h4>
-                    <p>Humanities and religious studies.</p>
+                    <p>This faculty listing includes Guru Nanak Studies. Its official unit page is the source for the department's academic profile, research areas, and any current programmes.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-guru-nanak-studies.aspx" target="_blank" rel="noopener noreferrer">Guru Nanak Studies</a><span>Guru Nanak Studies and related humanities.</span></li>
@@ -555,7 +633,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-sports-medicine">Sports Medicine &amp; Physiotherapy</h4>
-                    <p>Physiotherapy, sports sciences and sports medicine.</p>
+                    <p>The listed units are Physiotherapy and the MYAS GNDU Department of Sports Sciences &amp; Medicine. Their names identify distinct areas in rehabilitation and health, sports sciences, and sports medicine; check each official page for its programmes and facilities.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-sports-medicine-and-physiotherapy.aspx" target="_blank" rel="noopener noreferrer">Department of Physiotherapy</a><span>Physiotherapy.</span></li>
@@ -568,7 +646,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-visual-arts">Visual Art &amp; Performing Arts</h4>
-                    <p>Visual and performing arts.</p>
+                    <p>GNDU lists the Department of Visual and Performing Arts in this faculty. The linked unit page provides the authoritative programme information for its visual and performance-based academic work.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-music.aspx" target="_blank" rel="noopener noreferrer">Department of Visual and Performing Arts</a><span>Visual and performing arts, including music.</span></li>
@@ -580,7 +658,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-planning">Physical Planning &amp; Architecture</h4>
-                    <p>Architecture and planning.</p>
+                    <p>This group includes Architecture and the Guru Ram Dass School of Planning. Consult the respective official pages for programme structures, eligibility, and current campus availability.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-architecture.aspx" target="_blank" rel="noopener noreferrer">Architecture</a><span>Architecture.</span></li>
@@ -593,7 +671,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-education">Education</h4>
-                    <p>Teacher education and education studies.</p>
+                    <p>The Education department is GNDU's listed unit for education and teacher-education study. Course names, professional requirements, and teaching practice details should be checked on its official page.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-education.aspx" target="_blank" rel="noopener noreferrer">Education</a><span>Education and teacher education.</span></li>
@@ -605,7 +683,7 @@
                 <details class="faculty-disclosure">
                   <summary class="expand-summary">
                     <h4 id="faculty-agriculture">Agriculture &amp; Forestry</h4>
-                    <p>Agricultural and forestry-related study and research.</p>
+                    <p>The faculty listing includes the Department of Agriculture. Its official page is the source for current programme offerings and information on agricultural study and research.</p>
                   </summary>
                 <ul class="department-list">
                   <li><a href="https://online.gndu.ac.in/department-of-agriculture.aspx" target="_blank" rel="noopener noreferrer">Department of Agriculture</a><span>Agriculture, crops and agricultural sciences.</span></li>
@@ -613,6 +691,21 @@
                 </details>
               </section>
             </div>
+            <details class="academic-centre faculty-card">
+              <summary class="expand-summary">
+                <h4>Centre for IT Solutions</h4>
+                <p>GNDU lists this as a university centre, separately from the faculty department directory. Its page describes university IT services and selected teaching programmes.</p>
+              </summary>
+              <p class="resource-copy">
+                The Centre's official page describes software development,
+                consultancy, website design and management, and teaching.
+                It lists PGDCA and DCA; its certificate-course examples are
+                historical and current schedules must be confirmed.
+              </p>
+              <div class="directory-links">
+                <a href="https://online.gndu.ac.in/CITS.aspx" target="_blank" rel="noopener noreferrer">Centre for IT Solutions official page</a>
+              </div>
+            </details>
             <div class="directory-links">
               <a href="https://online.gndu.ac.in/Departments.aspx" target="_blank" rel="noopener noreferrer">Official list of faculties and departments</a>
               <a href="https://digital.gndu.ac.in/" target="_blank" rel="noopener noreferrer">Official GNDU digital website</a>
@@ -688,14 +781,13 @@
             <span class="placeholder-tag">Programme directory</span>
             <h3>Courses and Programmes</h3>
             <span class="summary-description">
-            The entries below are programmes verified on the linked GNDU
-            department and official university pages; they are not a complete
-            session-wise university-wide catalogue or a guarantee of current
-            admission. BCA is included because GNDU lists it for course-related
-            enquiries, but the current teaching campus or college could not be
-            verified. Check the relevant Main Campus, Regional Campus, or
-            constituent-college listing for programme availability, eligibility,
-            fees, and admission rules.
+            The listings below are drawn from official GNDU department and
+            university pages; they are not a complete session-wise catalogue
+            or a guarantee of current admission. BCA appears on GNDU's
+            course-related enquiries page, but its offering institution,
+            duration, and eligibility were not confirmed. Verify the course,
+            campus or college, eligibility, fees, and admission rules in the
+            current official admission material.
             </span>
             </summary>
             <div class="collapsible-content">
@@ -712,7 +804,7 @@
               <details class="course-category" aria-labelledby="course-undergraduate">
                 <summary class="expand-summary">
                   <h4 id="course-undergraduate">Bachelor Programmes</h4>
-                  <p class="course-category-note">GNDU department pages list the following bachelor-level examples:</p>
+                  <p class="course-category-note">GNDU department pages list these bachelor-level programmes and integrated-course exit awards. Eligibility and session availability should be checked in the current prospectus.</p>
                 </summary>
                 <ul class="course-list">
                   <li>
@@ -763,6 +855,10 @@
                     <span class="course-eligibility">Eligibility listed by GNDU: 10+2 with at least 50% marks (45% for SC/ST); admission through a university entrance test. Check the current prospectus for applicable rules.</span>
                   </li>
                   <li>
+                    <a href="https://online.gndu.ac.in/department-of-Tourism%20-and%20-Hospitality.aspx" target="_blank" rel="noopener noreferrer"><strong>Bachelor of Hotel Management and Catering Technology (BHMCT)</strong></a> <span class="course-facts">UG · 4 years · Hotel Management and Tourism</span>
+                    <span class="course-eligibility">GNDU lists 10+2 with at least 50% marks (45% for SC/ST) or an equivalent examination; admission by university entrance-test merit. Confirm current session rules.</span>
+                  </li>
+                  <li>
                     <a href="https://online.gndu.ac.in/department-of-human-genetics.aspx" target="_blank" rel="noopener noreferrer"><strong>B.Sc. Human Genetics (FYIP exit award)</strong></a> <span class="course-facts">UG exit award · 3 years · Human Genetics</span>
                     <span class="course-eligibility">GNDU lists 10+2 in the Medical stream with at least 50% marks (45% for SC/ST) and university entrance-test merit for entry to this integrated route. Check the current prospectus for session rules.</span>
                   </li>
@@ -776,7 +872,7 @@
                   </li>
                   <li>
                     <a href="https://online.gndu.ac.in/department-of-physical-education.aspx" target="_blank" rel="noopener noreferrer"><strong>Bachelor of Physical Education (B.P.Ed.)</strong></a> <span class="course-facts">Bachelor programme · 2 years · Physical Education</span>
-                    <span class="course-eligibility">GNDU lists several qualifying degree and sports-participation routes; see the department page for the full criteria and current prospectus for session rules.</span>
+                    <span class="course-eligibility">GNDU's published criteria list these routes: a bachelor's degree in any discipline with 50% marks plus qualifying inter-college, inter-zonal, or district-school sports participation; a bachelor's degree in Physical Education with 45%; a bachelor's degree with 45% and Physical Education as a compulsory/elective subject; a bachelor's degree with 45% plus specified national, inter-university, state, or qualifying lower-level sports achievement; an international participation/achievement route; or graduation with 45% and three years' teaching experience for deputed in-service teachers/coaches. All applicants must pass the Physical Fitness Test, and merit is determined among those who qualify. The page was updated in 2020; verify current criteria and accepted competitions in the latest prospectus.</span>
                   </li>
                 </ul>
               </details>
@@ -784,7 +880,7 @@
               <details class="course-category" aria-labelledby="course-integrated">
                 <summary class="expand-summary">
                   <h4 id="course-integrated">Five-Year Integrated Programmes</h4>
-                  <p class="course-category-note">The official programme pages list these integrated routes:</p>
+                  <p class="course-category-note">The official programme pages list these integrated routes. Exit awards and admissions requirements vary by programme and session.</p>
                 </summary>
                 <ul class="course-list">
                   <li>
@@ -803,6 +899,10 @@
                         <a href="https://online.gndu.ac.in/department-of-human-genetics.aspx" target="_blank" rel="noopener noreferrer"><strong>M.Sc. Human Genetics (FYIP)</strong></a> <span class="course-facts">Integrated · 5 years · Human Genetics</span>
                         <span class="course-eligibility">GNDU lists 10+2 in the Medical stream with at least 50% marks (45% for SC/ST) and university entrance-test merit; check the current prospectus for session rules.</span>
                       </li>
+                  <li>
+                    <a href="https://online.gndu.ac.in/department-of-physics.aspx" target="_blank" rel="noopener noreferrer"><strong>M.Sc. Physics (FYIC) (USHS)</strong></a> <span class="course-facts">Integrated · 5 years · Physics</span>
+                    <span class="course-eligibility">GNDU's Physics page lists 10+2 in a science subject with at least 50% marks (45% for SC/ST) and university entrance-test merit. The page was updated in 2020; confirm current criteria.</span>
+                  </li>
                   <li>
                     <a href="https://online.gndu.ac.in/department-of-commerce.aspx" target="_blank" rel="noopener noreferrer"><strong>MBA (Finance) (FYIP)</strong></a> <span class="course-facts">Integrated · 5 years · University School of Financial Studies</span>
                     <span class="course-eligibility">GNDU lists 10+2 in any stream with at least 50% marks (45% for SC/ST) and entrance-test merit; check the current prospectus for session rules.</span>
@@ -839,6 +939,14 @@
                   <li>
                     <a href="https://online.gndu.ac.in/department-of-human-genetics.aspx" target="_blank" rel="noopener noreferrer"><strong>M.Sc. Human Genetics</strong></a> <span class="course-facts">PG · 2 years · Human Genetics</span>
                     <span class="course-eligibility">GNDU lists a B.Sc. in Medical/Life Sciences with at least 50% marks (45% for SC/ST), or MBBS/BDS with at least 50% (45% for SC/ST); admission through a department entrance test.</span>
+                  </li>
+                  <li>
+                    <a href="https://online.gndu.ac.in/department-of-physics.aspx" target="_blank" rel="noopener noreferrer"><strong>M.Sc. Physics</strong></a> <span class="course-facts">PG · 2 years · Physics</span>
+                    <span class="course-eligibility">GNDU lists a B.Sc. with Physics, Mathematics, and Chemistry, Electronics, Computer Science, or Computer Application, with at least 50% marks (45% for SC/ST); admission by department entrance-test merit. The source page was updated in 2020; confirm current criteria.</span>
+                  </li>
+                  <li>
+                    <a href="https://online.gndu.ac.in/department-of-physical-education.aspx" target="_blank" rel="noopener noreferrer"><strong>Master of Physical Education (M.P.Ed.)</strong></a> <span class="course-facts">PG · 2 years · Physical Education</span>
+                    <span class="course-eligibility">GNDU's published criteria specify a one-year B.P.Ed. or four-year B.P.E. degree from GNDU or a recognized Indian or foreign university/institution, with at least 50% aggregate marks (45% for SC/ST). Candidates must pass the Physical Fitness Test; admission is by merit among those who qualify. The source page was updated in 2020; verify current criteria and tests in the latest prospectus.</span>
                   </li>
                 </ul>
               </details>
@@ -884,10 +992,11 @@
                 <summary class="expand-summary">
                   <h4 id="course-certificates">Certificate Courses</h4>
                   <p class="course-category-note">
-                  GNDU's Centre for IT Solutions page mentions certificate
-                  courses, but a current course list, duration and schedule
-                  could not be verified. Please check the official GNDU website
-                  for details.
+                  GNDU's Centre for IT Solutions page describes three-month
+                  certificate-course examples in IT and office software,
+                  C/C++, Java, Python, and web technologies. These are from
+                  an older page and are not confirmed as current offerings;
+                  no current schedule or eligibility was verified.
                   </p>
                 </summary>
                 <div class="directory-links">
@@ -937,7 +1046,7 @@
             <summary class="directory-summary">
               <span class="placeholder-tag">Verified information</span>
               <h3>Canteens</h3>
-              <span class="summary-description">Official details are available for canteens inside the university Boys' Hostel.</span>
+              <span class="summary-description">GNDU publishes some hostel-specific canteen details; a current campus-wide food-court and outlet directory was not found.</span>
             </summary>
             <div class="collapsible-content resource-grid">
               <details class="resource-card">
@@ -959,9 +1068,12 @@
               <details class="resource-card">
                 <summary class="expand-summary"><h4>Other Campus Dining</h4></summary>
                 <p>
-                  Verified locations, menus, prices and hours for other campus
-                  canteens were not available in the official sources checked.
-                  Please check the official GNDU website for details.
+                  GNDU's hostel profiles also mention canteen services at
+                  several named residences, with limited information about
+                  available items. They do not provide a current campus-wide
+                  food-court or outlet directory, unit list, or verified
+                  details for general-campus dining. Check the official
+                  hostel page for the published hostel-specific information.
                 </p>
                 <div class="directory-links">
                   <a href="https://digital.gndu.ac.in/" target="_blank" rel="noopener noreferrer">GNDU official website</a>
@@ -1137,9 +1249,10 @@
       <div class="footer-inner">
         <section class="footer-column footer-project" aria-labelledby="footer-project-title">
           <h2 id="footer-project-title">Project information</h2>
-          <a class="footer-brand" href="#home">GNDU Freshers Guide</a>
+          <a class="footer-brand" href="/">GNDU Freshers Guide</a>
           <p>An independent student information project for freshers. This is not the official GNDU website and is not affiliated with the University.</p>
-          <a class="back-to-top" href="#home">Back to top ↑</a>
+          <a href="/admin.html">Admin Login</a>
+          <a class="back-to-top" href="/">Back to top ↑</a>
         </section>
         <section class="footer-column" aria-labelledby="footer-university-title">
           <h2 id="footer-university-title">Guru Nanak Dev University</h2>
@@ -1172,16 +1285,27 @@
         <nav class="footer-column footer-quick-links" aria-labelledby="footer-links-title">
           <h2 id="footer-links-title">Quick links</h2>
           <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#events">Events</a></li>
-            <li><a href="#admissions">Admissions</a></li>
-            <li><a href="#courses">Courses</a></li>
-            <li><a href="#departments">Faculties &amp; Departments</a></li>
-            <li><a href="#campus-life">Campus Life</a></li>
-            <li><a href="#library">Library</a></li>
-            <li><a href="#campus-map">Campus Map</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/admissions">Admissions</a></li>
+            <li><a href="/courses">Courses</a></li>
+            <li><a href="/departments">Departments</a></li>
+            <li><a href="/scholarships">Scholarships</a></li>
+            <li><a href="/campus-life">Campus Life</a></li>
+            <li><a href="/hostels">Hostels</a></li>
+            <li><a href="/library">Library</a></li>
+            <li><a href="/canteens">Canteens</a></li>
+            <li><a href="/sports">Sports</a></li>
+            <li><a href="/health-services">Health Services</a></li>
+            <li><a href="/campus-map">Campus Map</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/placements">Placements</a></li>
+            <li><a href="/student-life">Student Life</a></li>
+            <li><a href="/photo-gallery">Photo Gallery</a></li>
+            <li><a href="/about">About GNDU</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/exams-results">Exams &amp; Results</a></li>
+            <li><a href="/faqs">FAQs</a></li>
+            <li><a href="/student-support">Student Support</a></li>
           </ul>
         </nav>
       </div>

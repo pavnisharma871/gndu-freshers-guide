@@ -140,13 +140,65 @@ summary:focus-visible {
   height: 40px;
 }
 
-.site-nav ul {
+.site-nav > ul {
   display: flex;
   align-items: center;
   gap: clamp(13px, 1.7vw, 25px);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.nav-more {
+  position: relative;
+}
+
+.nav-more > details > summary {
+  padding-block: 10px;
+  color: var(--nav-link-color);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+
+.nav-more > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-more > details > summary::after {
+  margin-left: 5px;
+  color: var(--gold-600);
+  content: "▾";
+}
+
+.nav-more > details[open] > ul {
+  position: absolute;
+  z-index: 6;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  width: min(540px, calc(100vw - 32px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px 12px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  list-style: none;
+}
+
+.nav-more > details > ul a {
+  display: block;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.nav-more > details > ul a:hover,
+.nav-more > details > ul a:focus-visible {
+  background: var(--canvas);
 }
 
 .site-nav a {
@@ -805,6 +857,136 @@ details[open] > .expand-summary::after {
   color: var(--gold-600);
 }
 
+.admission-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.admission-panel,
+.student-record-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+  background: var(--paper);
+}
+
+.admission-panel h3 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: 21px;
+}
+
+.admission-panel-intro,
+.demo-disclaimer {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admission-panel-intro {
+  margin: 0 0 18px;
+}
+
+.admission-form {
+  display: grid;
+  gap: 9px;
+}
+
+.admission-form label {
+  margin-top: 4px;
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admission-form input,
+.admission-form select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 11px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+
+.admission-form input:focus-visible,
+.admission-form select:focus-visible {
+  outline: 3px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+.admission-form small {
+  margin-top: -5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admission-form button {
+  justify-self: start;
+  margin-top: 8px;
+}
+
+.admission-form button:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+.admission-form-message,
+.record-search-message {
+  min-height: 1.65em;
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.is-error {
+  color: #a32929 !important;
+}
+
+.demo-disclaimer {
+  margin: 15px 0 0;
+}
+
+.student-record-results {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.student-record-card {
+  padding: 15px;
+  background: var(--canvas);
+}
+
+.student-record-card h4 {
+  margin: 0 0 10px;
+  color: var(--text-strong);
+}
+
+.student-record-card dl {
+  display: grid;
+  grid-template-columns: minmax(115px, 0.8fr) minmax(0, 1.2fr);
+  gap: 5px 12px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.student-record-card dt {
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.student-record-card dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 .directory-card {
   grid-column: 1 / -1;
   background: var(--paper);
@@ -940,7 +1122,7 @@ details[open] > .expand-summary::after {
 .photo-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 18px;
 }
 
 .photo-grid figure {
@@ -964,9 +1146,9 @@ details[open] > .expand-summary::after {
 }
 
 .photo-grid figcaption {
-  padding: 8px 10px;
+  padding: 10px 12px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .about {
@@ -1225,6 +1407,83 @@ details[open] > .expand-summary::after {
   font-size: 14px;
 }
 
+.hostel-profile {
+  margin-block: 22px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold-500);
+  border-radius: var(--radius-card);
+  padding: clamp(18px, 3vw, 28px);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.hostel-profile-regional {
+  border-left-color: var(--navy-700);
+  background: var(--gold-100);
+}
+
+.hostel-profile > h3 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: clamp(19px, 2.4vw, 24px);
+  line-height: 1.3;
+}
+
+.hostel-profile-intro {
+  margin: 0;
+  color: var(--muted);
+}
+
+.hostel-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 10px;
+  margin: 18px 0 22px;
+}
+
+.hostel-fact {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 11px 13px;
+  background: var(--canvas);
+}
+
+.hostel-fact dt {
+  color: var(--gold-600);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hostel-fact dd {
+  margin: 3px 0 0;
+  color: var(--text-strong);
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.hostel-profile-section {
+  margin-top: 20px;
+}
+
+.hostel-profile-section h4 {
+  margin: 0 0 6px;
+  color: var(--navy-900);
+  font-size: 16px;
+}
+
+.hostel-profile-section p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.hostel-profile-section p:last-child {
+  margin-bottom: 0;
+}
+
 .route-detail-content .admissions-links,
 .route-detail-content .directory-links {
   margin-top: 18px;
@@ -1293,8 +1552,9 @@ details[open] > .expand-summary::after {
 }
 
 .route-detail-gallery {
-  max-width: 760px;
-  margin-block: 24px;
+  max-width: 1120px;
+  margin: 28px auto;
+  gap: 20px;
 }
 
 .route-media-figure {
@@ -1317,10 +1577,67 @@ details[open] > .expand-summary::after {
   object-fit: cover;
 }
 
+.library-photo-gallery {
+  align-items: start;
+}
+
+.library-presentation-link {
+  margin: 12px;
+}
+
+.library-photo-gallery .route-media-figure img {
+  height: clamp(220px, 30vw, 340px);
+  aspect-ratio: auto;
+  object-fit: contain;
+  background: var(--canvas);
+}
+
+.library-photo-gallery .library-slide-frame {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 30vw, 340px);
+  border: 0;
+  background: var(--canvas);
+}
+
 .route-media-figure figcaption {
-  padding: 8px 10px;
+  padding: 10px 12px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
+}
+
+.photo-attribution {
+  margin: -12px 0 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.home-photo-showcase {
+  padding-block: 64px 32px;
+}
+
+.home-photo-showcase .route-detail-gallery {
+  margin-top: 0;
+}
+
+.event-programme-grid .route-card {
+  padding: 19px;
+}
+
+.event-programme-grid .route-card h2 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: 18px;
+}
+
+.event-programme-grid .route-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.event-programme-grid .route-card[hidden] {
+  display: none;
 }
 
 .route-about-content {
@@ -1410,7 +1727,7 @@ details[open] > .expand-summary::after {
     font-size: 15px;
   }
 
-  .site-nav ul {
+  .site-nav > ul {
     gap: 12px;
   }
 
@@ -1449,12 +1766,35 @@ details[open] > .expand-summary::after {
     display: block;
   }
 
-  .site-nav ul {
+  .site-nav > ul {
     display: grid;
     width: min(var(--content-width), 100%);
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0 20px;
     margin-inline: auto;
+  }
+
+  .nav-more {
+    grid-column: 1 / -1;
+  }
+
+  .nav-more > details > summary {
+    border-bottom: 1px solid var(--line);
+    padding-block: 12px;
+    font-size: 14px;
+  }
+
+  .nav-more > details[open] > ul {
+    position: static;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 12px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    padding: 4px 0 8px;
+    background: transparent;
+    box-shadow: none;
   }
 
   .site-nav a {
@@ -1579,7 +1919,8 @@ details[open] > .expand-summary::after {
 
   .photo-grid,
   .route-photo-grid {
-    gap: 9px;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .route-page {
@@ -1888,6 +2229,9 @@ details[open] > .expand-summary::after {
 :root[data-theme="dark"] .department-list a,
 :root[data-theme="dark"] .directory-links a,
 :root[data-theme="dark"] .course-list strong,
+:root[data-theme="dark"] .admission-panel h3,
+:root[data-theme="dark"] .admission-form label,
+:root[data-theme="dark"] .student-record-card h4,
 :root[data-theme="dark"] .route-breadcrumbs a,
 :root[data-theme="dark"] .route-card-link h2,
 :root[data-theme="dark"] .route-card-arrow,
@@ -1940,4 +2284,265 @@ details[open] > .expand-summary::after {
   border-color: var(--line);
   background: var(--canvas);
   color: var(--ink);
+}
+
+:root[data-theme="dark"] .admission-form input,
+:root[data-theme="dark"] .admission-form select {
+  border-color: var(--line);
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+:root[data-theme="dark"] .is-error {
+  color: #ffaaa5 !important;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-shell {
+  padding-block: 48px 80px;
+}
+
+.admin-page-heading {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.admin-page-heading h1 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: clamp(30px, 5vw, 42px);
+  line-height: 1.15;
+}
+
+.admin-page-heading > p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+
+.admin-login-panel {
+  width: min(100%, 520px);
+}
+
+.admin-login-panel h2,
+.admin-list-heading h2 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: 22px;
+}
+
+.admin-dashboard {
+  display: grid;
+  gap: 20px;
+}
+
+.admin-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-summary-card {
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--gold-500);
+  border-radius: 12px;
+  padding: 18px 20px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.admin-summary-card p {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.admin-summary-card strong {
+  color: var(--text-strong);
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.admin-list-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.admin-list-heading .admission-panel-intro {
+  margin-bottom: 0;
+}
+
+.admin-filter-form {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.5fr) repeat(3, minmax(140px, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-filter-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--text-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-filter-form input,
+.admin-filter-form select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-filter-form input:focus-visible,
+.admin-filter-form select:focus-visible {
+  outline: 3px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+.admin-feedback {
+  min-height: 1.5em;
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+.admin-applications-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.admin-applications-table th,
+.admin-applications-table td {
+  min-width: 115px;
+  border-bottom: 1px solid var(--line);
+  padding: 11px 12px;
+  vertical-align: top;
+}
+
+.admin-applications-table th {
+  background: var(--canvas);
+  color: var(--text-strong);
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.admin-applications-table td:nth-child(2) {
+  min-width: 255px;
+  font-family: Consolas, "Courier New", monospace;
+  overflow-wrap: anywhere;
+}
+
+.admin-applications-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.admin-pagination p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-pagination > div {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-header-actions .button,
+.admin-pagination .button,
+.admin-list-heading .button {
+  min-height: 40px;
+  padding: 8px 13px;
+}
+
+:root[data-theme="dark"] .admin-login-panel h2,
+:root[data-theme="dark"] .admin-list-heading h2,
+:root[data-theme="dark"] .admin-filter-form label,
+:root[data-theme="dark"] .admin-applications-table th {
+  color: var(--link-color);
+}
+
+:root[data-theme="dark"] .admin-filter-form input,
+:root[data-theme="dark"] .admin-filter-form select {
+  border-color: var(--line);
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .admin-filter-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-shell {
+    padding-block: 30px 56px;
+  }
+
+  .admin-header-actions {
+    gap: 8px;
+  }
+
+  .admin-header-actions .text-link {
+    font-size: 12px;
+  }
+
+  .admin-summary-grid {
+    gap: 10px;
+  }
+
+  .admin-summary-card {
+    padding: 14px;
+  }
+
+  .admin-summary-card strong {
+    font-size: 25px;
+  }
+
+  .admin-filter-form {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-list-heading,
+  .admin-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-pagination > div {
+    justify-content: space-between;
+  }
 }

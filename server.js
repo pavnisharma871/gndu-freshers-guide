@@ -1,15 +1,41 @@
 import express from "express";
+import "dotenv/config";
 
+import { readFileSync } from "node:fs";
 import path from "node:path";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { MongoClient } from "mongodb";
+import {
+  createAdmissionRecord,
+  ensureAdmissionIndexes,
+  getConfiguredCourseNames,
+  validateAdmission,
+} from "./admission-model.js";
 
 const app = express();
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
-const host = "0.0.0.0";
+const host = process.env.HOST || "127.0.0.1";
+const staticAssetPaths = new Set([
+  "/index.html",
+  "/styles.css",
+  "/script.js",
+  "/chatbot.js",
+  "/admin.html",
+  "/admin.js",
+]);
+const applicationRateBuckets = new Map();
+const adminLoginBuckets = new Map();
+const applications = readCourseCatalog();
+const courseNames = getConfiguredCourseNames(applications);
+const courseNameSet = new Set(courseNames);
+let applicationsCollectionPromise;
 
 const requestWindowMs = 10 * 60 * 1000;
 const requestLimit = 20;
+const adminSessionCookie = "gndu_admin_session";
+const adminSessionLifetimeMs = 8 * 60 * 60 * 1000;
 const rateBuckets = new Map();
 const faqEntries = [
   {
@@ -171,6 +197,288 @@ const faqEntries = [
   },
 ];
 
+function decodeHtmlText(value) {
+  const namedEntities = {
+    amp: "&",
+    apos: "'",
+    gt: ">",
+    lt: "<",
+    nbsp: " ",
+    quot: '"',
+  };
+  return value
+    .replace(/<[^>]*>/g, "")
+    .replace(/&(#x[\da-f]+|#\d+|[a-z]+);/gi, (match, entity) => {
+      if (entity[0] === "#") {
+        const codePoint = entity[1].toLowerCase() === "x"
+          ? Number.parseInt(entity.slice(2), 16)
+          : Number.parseInt(entity.slice(1), 10);
+        return Number.isFinite(codePoint) ? String.fromCodePoint(codePoint) : match;
+      }
+      return namedEntities[entity.toLowerCase()] || match;
+    })
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function readCourseCatalog() {
+  const html = readFileSync(path.join(projectRoot, "index.html"), "utf8");
+  const categories = [];
+  const categoryPattern = /<details\b[^>]*class="course-category"[^>]*>([\s\S]*?)<\/details>/gi;
+
+  for (const [, categoryHtml] of html.matchAll(categoryPattern)) {
+    const heading = categoryHtml.match(/<h4\b[^>]*>([\s\S]*?)<\/h4>/i);
+    if (!heading) continue;
+
+    const courses = [];
+    for (const [, itemHtml] of categoryHtml.matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/gi)) {
+      const course = itemHtml.match(/<strong\b[^>]*>([\s\S]*?)<\/strong>/i);
+      if (course) courses.push({ name: decodeHtmlText(course[1]) });
+    }
+
+    categories.push({ title: decodeHtmlText(heading[1]), courses });
+  }
+  return categories;
+}
+
+function getApplicationsCollection() {
+  if (!process.env.MONGODB_URI) {
+    throw new Error("MONGODB_URI is not configured.");
+  }
+  if (!applicationsCollectionPromise) {
+    const client = new MongoClient(process.env.MONGODB_URI, {
+      connectTimeoutMS: 8000,
+      serverSelectionTimeoutMS: 8000,
+      socketTimeoutMS: 10000,
+    });
+    applicationsCollectionPromise = client.connect()
+      .then(() => client.db(process.env.MONGODB_DB || "gndu_freshers_guide").collection("studentApplications"))
+      .then(async (collection) => {
+        await ensureAdmissionIndexes(collection);
+        return collection;
+      })
+      .catch(async (error) => {
+        applicationsCollectionPromise = undefined;
+        try {
+          await client.close();
+        } catch (closeError) {
+          console.error("Could not close the failed admission database connection:", closeError instanceof Error ? closeError.name : "Unknown error");
+        }
+        throw error;
+      });
+  }
+  return applicationsCollectionPromise;
+}
+
+function takeApplicationRateLimit(req, res, next) {
+  const now = Date.now();
+  const key = req.ip || req.socket.remoteAddress || "unknown";
+  let bucket = applicationRateBuckets.get(key);
+
+  if (!bucket || now - bucket.startedAt >= requestWindowMs) {
+    if (applicationRateBuckets.size >= 5000) {
+      for (const [ip, entry] of applicationRateBuckets) {
+        if (now - entry.startedAt >= requestWindowMs) applicationRateBuckets.delete(ip);
+      }
+      if (applicationRateBuckets.size >= 5000 && !applicationRateBuckets.has(key)) {
+        return res.status(429).json({ error: "The student service is busy. Please try again later." });
+      }
+    }
+    bucket = { startedAt: now, count: 0 };
+    applicationRateBuckets.set(key, bucket);
+  }
+
+  if (bucket.count >= 30) {
+    const retrySeconds = Math.max(1, Math.ceil((requestWindowMs - (now - bucket.startedAt)) / 1000));
+    res.set("Retry-After", String(retrySeconds));
+    return res.status(429).json({ error: "Too many student service requests. Please try again later." });
+  }
+
+  bucket.count += 1;
+  next();
+}
+
+function recordsAccessConfigured() {
+  return typeof process.env.RECORDS_ACCESS_TOKEN === "string"
+    && process.env.RECORDS_ACCESS_TOKEN.length >= 32;
+}
+
+function adminAuthenticationConfigured() {
+  return typeof process.env.ADMIN_USERNAME === "string"
+    && process.env.ADMIN_USERNAME.length >= 3
+    && typeof process.env.ADMIN_PASSWORD === "string"
+    && process.env.ADMIN_PASSWORD.length >= 16
+    && typeof process.env.ADMIN_SESSION_SECRET === "string"
+    && process.env.ADMIN_SESSION_SECRET.length >= 32;
+}
+
+function safeCredentialMatches(supplied, expected) {
+  const key = process.env.ADMIN_SESSION_SECRET;
+  if (!key || typeof supplied !== "string" || typeof expected !== "string") return false;
+  const suppliedDigest = createHmac("sha256", key).update(supplied).digest();
+  const expectedDigest = createHmac("sha256", key).update(expected).digest();
+  return timingSafeEqual(suppliedDigest, expectedDigest);
+}
+
+function getAdminSessionSignature(expiration) {
+  return createHmac("sha256", process.env.ADMIN_SESSION_SECRET)
+    .update(`gndu-admin:${expiration}`)
+    .digest("hex");
+}
+
+function isAdminSessionValid(req) {
+  if (!adminAuthenticationConfigured()) return false;
+  const cookie = (req.headers.cookie || "")
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${adminSessionCookie}=`))
+    ?.slice(adminSessionCookie.length + 1);
+  const match = cookie?.match(/^(\d{13})\.([a-f\d]{64})$/);
+  if (!match || Number(match[1]) <= Date.now()) return false;
+
+  const expected = Buffer.from(getAdminSessionSignature(match[1]), "hex");
+  const supplied = Buffer.from(match[2], "hex");
+  return supplied.length === expected.length && timingSafeEqual(supplied, expected);
+}
+
+function takeAdminLoginRateLimit(req, res, next) {
+  const now = Date.now();
+  const key = req.ip || req.socket.remoteAddress || "unknown";
+  let bucket = adminLoginBuckets.get(key);
+  if (!bucket || now - bucket.startedAt >= requestWindowMs) {
+    if (adminLoginBuckets.size >= 5000) {
+      for (const [ip, entry] of adminLoginBuckets) {
+        if (now - entry.startedAt >= requestWindowMs) adminLoginBuckets.delete(ip);
+      }
+      if (adminLoginBuckets.size >= 5000 && !adminLoginBuckets.has(key)) {
+        return res.status(429).json({ error: "The admin login service is busy. Please try again later." });
+      }
+    }
+    bucket = { startedAt: now, count: 0 };
+    adminLoginBuckets.set(key, bucket);
+  }
+
+  if (bucket.count >= 10) {
+    const retrySeconds = Math.max(1, Math.ceil((requestWindowMs - (now - bucket.startedAt)) / 1000));
+    res.set("Retry-After", String(retrySeconds));
+    return res.status(429).json({ error: "Too many admin login attempts. Please try again later." });
+  }
+
+  bucket.count += 1;
+  next();
+}
+
+function authorizeAdmin(req, res, next) {
+  res.set("Cache-Control", "no-store");
+  if (!adminAuthenticationConfigured()) {
+    return res.status(503).json({ error: "Admin authentication is not configured on the server." });
+  }
+  if (!isAdminSessionValid(req)) {
+    return res.status(401).json({ error: "Admin authentication is required." });
+  }
+  next();
+}
+
+function validateAdminLogin(body) {
+  if (
+    !body
+    || typeof body !== "object"
+    || Array.isArray(body)
+    || Object.keys(body).some((key) => !["username", "password"].includes(key))
+    || typeof body.username !== "string"
+    || typeof body.password !== "string"
+    || body.username.length > 100
+    || body.password.length > 256
+  ) {
+    return null;
+  }
+  return { username: body.username, password: body.password };
+}
+
+function parseAdminApplicationQuery(query) {
+  const allowedKeys = new Set(["search", "course", "academicSession", "status", "page", "pageSize"]);
+  if (Object.keys(query).some((key) => !allowedKeys.has(key))) return null;
+
+  const fields = ["search", "course", "academicSession", "status"];
+  const values = {};
+  for (const field of fields) {
+    const value = query[field];
+    if (value === undefined) continue;
+    if (typeof value !== "string" || value.length > (field === "search" ? 100 : 200)) return null;
+    values[field] = value.trim();
+  }
+
+  const page = query.page === undefined ? 1 : Number(query.page);
+  const pageSize = query.pageSize === undefined ? 20 : Number(query.pageSize);
+  if (
+    !Number.isSafeInteger(page)
+    || page < 1
+    || !Number.isSafeInteger(pageSize)
+    || pageSize < 1
+    || pageSize > 50
+  ) {
+    return null;
+  }
+  return { ...values, page, pageSize };
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function authorizeApplicationVerification(req, res, next) {
+  res.set("Cache-Control", "no-store");
+  if (!recordsAccessConfigured()) {
+    return res.status(503).json({ error: "Application verification has not been configured." });
+  }
+
+  const authorization = req.get("authorization") || "";
+  const suppliedToken = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+  const expected = Buffer.from(process.env.RECORDS_ACCESS_TOKEN);
+  const supplied = Buffer.from(suppliedToken);
+  if (expected.length !== supplied.length || !timingSafeEqual(expected, supplied)) {
+    return res.status(401).json({ error: "A valid verification access token is required." });
+  }
+  next();
+}
+
+function validateApplicationReference(body) {
+  if (
+    !body
+    || typeof body !== "object"
+    || Array.isArray(body)
+    || typeof body.applicationReferenceId !== "string"
+  ) {
+    return null;
+  }
+  const applicationReferenceId = body.applicationReferenceId.trim().toUpperCase();
+  return /^GNDU-APP-[A-F\d]{32}$/.test(applicationReferenceId)
+    ? applicationReferenceId
+    : null;
+}
+
+function getAdmissionSaveError(error) {
+  if (!process.env.MONGODB_URI) {
+    return "MongoDB is not configured. Set MONGODB_URI in .env before submitting applications.";
+  }
+  if (error?.name === "MongoServerSelectionError" || error?.name?.startsWith("MongoNetwork")) {
+    return `MongoDB could not be reached (${error.name}). Check the Atlas connection string, network access list, and cluster status.`;
+  }
+  if (error?.code === 18 || /authentication failed/i.test(error?.message || "")) {
+    return "MongoDB authentication failed. Check the Atlas database username and password in MONGODB_URI.";
+  }
+  if (error?.code === 11000) {
+    return "MongoDB rejected a duplicate application reference. Please submit again.";
+  }
+
+  const detail = error instanceof Error ? error.message : "Unknown database error.";
+  const safeDetail = detail
+    .replace(/mongodb(?:\+srv)?:\/\/[^\s"'<>]+/gi, "[connection string redacted]")
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, "[email redacted]")
+    .slice(0, 240);
+  return `MongoDB could not save the application: ${safeDetail}`;
+}
+
 function normalizeMessage(value) {
   return value
     .normalize("NFKC")
@@ -279,8 +587,219 @@ if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
 app.use(express.json({ limit: "64kb", strict: true }));
 
 app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", assistant: "predefined-faq", ready: true });
+  res.json({
+    status: "ok",
+    assistant: "predefined-faq",
+    ready: true,
+    admissions: {
+      databaseConfigured: Boolean(process.env.MONGODB_URI),
+      applicationVerificationConfigured: recordsAccessConfigured(),
+      adminAuthenticationConfigured: adminAuthenticationConfigured(),
+    },
+  });
 });
+
+app.get("/api/courses", (_req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json({ categories: applications });
+});
+
+app.get("/admin", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.sendFile(path.join(projectRoot, "admin.html"));
+});
+
+app.get("/api/admin/session", authorizeAdmin, (_req, res) => {
+  res.json({ authenticated: true });
+});
+
+app.post("/api/admin/login", takeAdminLoginRateLimit, (req, res) => {
+  res.set("Cache-Control", "no-store");
+  if (!adminAuthenticationConfigured()) {
+    return res.status(503).json({ error: "Admin authentication is not configured on the server." });
+  }
+
+  const credentials = validateAdminLogin(req.body);
+  if (
+    !credentials
+    || !safeCredentialMatches(credentials.username, process.env.ADMIN_USERNAME)
+    || !safeCredentialMatches(credentials.password, process.env.ADMIN_PASSWORD)
+  ) {
+    return res.status(401).json({ error: "The username or password is incorrect." });
+  }
+
+  const expiration = String(Date.now() + adminSessionLifetimeMs);
+  const signature = getAdminSessionSignature(expiration);
+  const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+  res.set(
+    "Set-Cookie",
+    `${adminSessionCookie}=${expiration}.${signature}; HttpOnly; SameSite=Strict; Path=/api/admin; Max-Age=${adminSessionLifetimeMs / 1000}${secure}`,
+  );
+  return res.json({ authenticated: true });
+});
+
+app.post("/api/admin/logout", authorizeAdmin, (_req, res) => {
+  const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+  res.set(
+    "Set-Cookie",
+    `${adminSessionCookie}=; HttpOnly; SameSite=Strict; Path=/api/admin; Max-Age=0${secure}`,
+  );
+  return res.json({ authenticated: false });
+});
+
+app.get("/api/admin/applications", authorizeAdmin, async (req, res) => {
+  const query = parseAdminApplicationQuery(req.query);
+  if (!query) {
+    return res.status(400).json({ error: "Invalid application search, filter, or pagination parameters." });
+  }
+
+  const filter = {};
+  if (query.course) filter.course = query.course;
+  if (query.academicSession) filter.academicSession = query.academicSession;
+  if (query.status) filter.status = query.status;
+  if (query.search) {
+    const search = escapeRegex(query.search);
+    filter.$or = [
+      { studentName: { $regex: search, $options: "i" } },
+      { applicationId: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  try {
+    const collection = await getApplicationsCollection();
+    const offset = (query.page - 1) * query.pageSize;
+    const [applicationsPage, totalFiltered, totalApplications, submittedApplications, sessions, statuses] =
+      await Promise.all([
+        collection.find(filter, {
+          projection: {
+            _id: 0,
+            studentName: 1,
+            applicationId: 1,
+            course: 1,
+            academicSession: 1,
+            status: 1,
+            createdAt: 1,
+          },
+        }).sort({ createdAt: -1, _id: -1 }).skip(offset).limit(query.pageSize).toArray(),
+        collection.countDocuments(filter),
+        collection.countDocuments({}),
+        collection.countDocuments({ status: "Submitted" }),
+        collection.distinct("academicSession"),
+        collection.distinct("status"),
+      ]);
+
+    return res.json({
+      applications: applicationsPage.map((application) => ({
+        studentName: application.studentName || "",
+        applicationReferenceId: application.applicationId || "",
+        course: application.course || "",
+        academicSession: application.academicSession || "",
+        status: application.status || "",
+        submittedAt: application.createdAt || null,
+      })),
+      page: query.page,
+      pageSize: query.pageSize,
+      totalFiltered,
+      totalPages: Math.max(1, Math.ceil(totalFiltered / query.pageSize)),
+      totalApplications,
+      submittedApplications,
+      filters: {
+        courses: courseNames,
+        academicSessions: sessions.filter((value) => typeof value === "string").sort(),
+        statuses: statuses.filter((value) => typeof value === "string").sort(),
+      },
+    });
+  } catch (error) {
+    console.error("Admin application list failed:", error instanceof Error ? error.name : "Unknown error");
+    return res.status(503).json({ error: getAdmissionSaveError(error) });
+  }
+});
+
+async function submitAdmissionApplication(req, res) {
+  res.set("Cache-Control", "no-store");
+  const application = validateAdmission(
+    req.body,
+    courseNameSet,
+  );
+  if (typeof application === "string") {
+    return res.status(400).json({ error: application });
+  }
+
+  try {
+    const collection = await getApplicationsCollection();
+    const admission = createAdmissionRecord(application);
+    let inserted;
+    try {
+      inserted = await collection.insertOne(admission);
+    } catch (error) {
+      if (error?.code === 11000) {
+        return res.status(409).json({ error: getAdmissionSaveError(error) });
+      }
+      throw error;
+    }
+
+    if (!inserted.acknowledged || !inserted.insertedId) {
+      throw new Error("MongoDB did not acknowledge the admission record.");
+    }
+
+    return res.status(201).json({
+      applicationReferenceId: admission.applicationId,
+      applicationId: admission.applicationId,
+      status: admission.status,
+      message: "The application was saved to the project database. This is not an official GNDU application or admission confirmation.",
+    });
+  } catch (error) {
+    const databaseUnavailable = !process.env.MONGODB_URI
+      || error?.name === "MongoServerSelectionError"
+      || error?.name === "MongoNotConnectedError"
+      || error?.name?.startsWith("MongoNetwork");
+    const errorMessage = getAdmissionSaveError(error);
+    console.error("Admission application save failed:", error instanceof Error ? error.name : "Unknown error", errorMessage);
+    return res.status(databaseUnavailable ? 503 : 500).json({
+      error: errorMessage,
+    });
+  }
+}
+
+app.post("/api/admissions", takeApplicationRateLimit, submitAdmissionApplication);
+app.post("/api/student-applications", takeApplicationRateLimit, submitAdmissionApplication);
+
+app.post(
+  "/api/admissions/verify",
+  takeApplicationRateLimit,
+  authorizeApplicationVerification,
+  async (req, res) => {
+    res.set("Cache-Control", "no-store");
+    const applicationReferenceId = validateApplicationReference(req.body);
+    if (!applicationReferenceId) {
+      return res.status(400).json({ error: "Enter a valid application reference ID." });
+    }
+
+    try {
+      const collection = await getApplicationsCollection();
+      const record = await collection.findOne({ applicationId: applicationReferenceId }, {
+        projection: {
+          _id: 0,
+          applicationId: 1,
+          status: 1,
+          createdAt: 1,
+        },
+      });
+      return res.json({
+        application: record
+          ? {
+              applicationReferenceId: record.applicationId,
+              status: record.status,
+              createdAt: record.createdAt,
+            }
+          : null,
+      });
+    } catch (error) {
+      console.error("Application verification failed:", error instanceof Error ? error.name : "Unknown error");
+      return res.status(503).json({ error: getAdmissionSaveError(error) });
+    }
+  },
+);
 
 app.post("/api/chat", takeRateLimit, (req, res) => {
   const validationError = validateChatBody(req.body);
@@ -297,8 +816,36 @@ app.post("/api/chat", takeRateLimit, (req, res) => {
 
 
 
-app.get(["/", "/index.html", "/styles.css", "/script.js", "/chatbot.js"], (req, res) => {
-  const fileName = req.path === "/" ? "index.html" : req.path.slice(1);
+app.get([
+  "/",
+  "/index.html",
+  "/styles.css",
+  "/script.js",
+  "/chatbot.js",
+  "/admin.html",
+  "/admin.js",
+  "/admissions",
+  "/courses",
+  "/departments",
+  "/scholarships",
+  "/campus-life",
+  "/hostels",
+  "/library",
+  "/canteens",
+  "/sports",
+  "/health-services",
+  "/campus-map",
+  "/events",
+  "/placements",
+  "/student-life",
+  "/photo-gallery",
+  "/about",
+  "/contact",
+  "/exams-results",
+  "/faqs",
+  "/student-support",
+], (req, res) => {
+  const fileName = staticAssetPaths.has(req.path) ? req.path.slice(1) : "index.html";
   res.sendFile(path.join(projectRoot, fileName));
 });
 

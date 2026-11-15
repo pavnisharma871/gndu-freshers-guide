@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Private dashboard for managing registrations submitted to the independent GNDU Freshers Guide student project."
+    >
+    <title>Admin Dashboard | GNDU Freshers Guide</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/admin.js" defer></script>
+  </head>
+  <body class="admin-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="GNDU Freshers Guide home">
+          <span class="brand-mark" aria-hidden="true">G</span>
+          <span class="brand-name">GNDU Freshers Guide</span>
+        </a>
+        <div class="admin-header-actions">
+          <a class="text-link" href="/">Back to guide</a>
+          <button class="button button-secondary" id="admin-logout" type="button" hidden>Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="section-shell admin-shell">
+      <header class="admin-page-heading">
+        <p class="eyebrow">Independent student project</p>
+        <h1>Student Admission Management</h1>
+        <p>
+          Review registrations stored by this project. These records are not
+          official GNDU applications or confirmed university admissions.
+        </p>
+      </header>
+
+      <section class="admission-panel admin-login-panel" id="admin-login-panel" aria-labelledby="admin-login-title">
+        <h2 id="admin-login-title">Administrator sign in</h2>
+        <p class="admission-panel-intro">Sign in with the administrator credentials configured on the server.</p>
+        <form class="admission-form" id="admin-login-form">
+          <label for="admin-username">Username</label>
+          <input id="admin-username" name="username" type="text" autocomplete="username" maxlength="100" required>
+          <label for="admin-password">Password</label>
+          <input id="admin-password" name="password" type="password" autocomplete="current-password" maxlength="256" required>
+          <button class="button button-primary" type="submit">Sign in</button>
+          <p class="admin-feedback admission-form-message" id="admin-login-feedback" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="admin-dashboard" id="admin-dashboard" aria-label="Registered applications" hidden>
+        <div class="admin-summary-grid" aria-live="polite">
+          <article class="admin-summary-card">
+            <p>Total applications</p>
+            <strong id="admin-total-count">—</strong>
+          </article>
+          <article class="admin-summary-card">
+            <p>Submitted applications</p>
+            <strong id="admin-submitted-count">—</strong>
+          </article>
+        </div>
+
+        <section class="admission-panel admin-applications-panel">
+          <div class="admin-list-heading">
+            <div>
+              <h2>Registered applications</h2>
+              <p class="admission-panel-intro">Only records saved in the project database are shown.</p>
+            </div>
+            <button class="button button-secondary" id="admin-refresh" type="button">Refresh</button>
+          </div>
+
+          <form class="admin-filter-form" id="admin-filter-form">
+            <label class="admin-search-field" for="admin-search">
+              Search name or reference ID
+              <input id="admin-search" name="search" type="search" maxlength="100" autocomplete="off">
+            </label>
+            <label for="admin-course-filter">
+              Course
+              <select id="admin-course-filter" name="course">
+                <option value="">All Courses</option>
+              </select>
+            </label>
+            <label for="admin-session-filter">
+              Academic session
+              <select id="admin-session-filter" name="academicSession">
+                <option value="">All Sessions</option>
+              </select>
+            </label>
+            <label for="admin-status-filter">
+              Registration status
+              <select id="admin-status-filter" name="status">
+                <option value="">All Statuses</option>
+              </select>
+            </label>
+            <button class="button button-primary" type="submit">Apply filters</button>
+          </form>
+
+          <p class="admin-feedback" id="admin-list-feedback" role="status" aria-live="polite"></p>
+          <div class="admin-table-scroll" tabindex="0" aria-label="Applications table">
+            <table class="admin-applications-table">
+              <thead>
+                <tr>
+                  <th scope="col">Student name</th>
+                  <th scope="col">Application reference ID</th>
+                  <th scope="col">Selected course</th>
+                  <th scope="col">Academic session</th>
+                  <th scope="col">Registration status</th>
+                  <th scope="col">Submission date</th>
+                </tr>
+              </thead>
+              <tbody id="admin-applications-body"></tbody>
+            </table>
+          </div>
+          <div class="admin-pagination">
+            <p id="admin-page-summary">No applications loaded.</p>
+            <div>
+              <button class="button button-secondary" id="admin-previous-page" type="button" disabled>Previous</button>
+              <button class="button button-secondary" id="admin-next-page" type="button" disabled>Next</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
